@@ -5,8 +5,9 @@ Please see or query the code for help (e.g. Matlab>> help MinVel).
 
 Any questions regarding the code can be directed to olboyd@usgs.gov.
 
-References
-Abers, G.A., and Hacker, B.R., 2016, A MATLAB toolbox and Excel workbook for calculating the densities, seismic wave speeds, and major element composition of minerals and rocks at pressure and temperature: Geochem. Geophys. Geosys., v. 16, p. 616­–624.
+References:
+
+Abers, G.A., and Hacker, B.R., 2016, A MATLAB toolbox and Excel workbook for calculating the densities, seismic wave speeds, and major element composition of minerals and rocks at pressure and temperature: Geochem. Geophys. Geosys., v. 16, p. 616–624.
 
 Hacker, B.R., and Abers, G.A., 2004, Subduction Factory 3: An Excel worksheet and macro for calculating the densities, seismic wave speeds, and H2O contents of minerals and rocks at pressure and temperature: Geochem. Geophys. Geosys., v. 5, no. Q01005.
 
