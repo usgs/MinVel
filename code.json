@@ -1,0 +1,46 @@
+[
+  {
+    "name": "MinVel",
+    "organization": "U.S. Geological Survey",
+    "description": "Calculates mineral density and anharmonic P- and S-wavespeeds as functions of pressure and temperature",
+    "version": "v0.0.1",
+    "status": "Preliminary",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://github.com/usgs/MinVel/new/master/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://usgs.github.io/MinVel/",
+    "downloadURL": "https://github.com/usgs/MinVel/archive/master.zip",
+    "disclaimerURL": "https://github.com/usgs/MinVel/new/master/LICENSE.md",
+    "repositoryUrl": "https://github.com/usgs/MinVel.git",
+    "vcs": "git",
+
+    "laborHours": null,
+
+    "tags": [
+      "Earthquake Hazards",
+      "Geologic Hazards Science Center",
+      "Mineral Properties"
+    ],
+
+    "languages": [
+      "Markdown"
+    ],
+
+    "contact": {
+      "name": "Oliver Boyd",
+      "email": "olboyd@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2019-02-22"
+    }
+  }
+]
