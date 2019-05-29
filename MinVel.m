@@ -146,7 +146,12 @@ function MV = MinVel(Comp, P, T)
 %		76. Dickite                       
 %
 
-load('MineralPhysicsDatabase');
+% NOTES: May want to update temperature dependence of thermal expansivity using Holland and Powell's (2011) 
+%        new revised equations (see figure 1 in that article). This will necessitate recalculating the first
+%	 Gruneisen parameters. This could provide more realistic temperature dependence of material 
+%	 properties within the mantle.
+
+Par = ncread('MineralPhysicsDatabase.nc','Parameter Values');
 
 if abs(sum(Comp.Fr) - 1) > 1e-6
 	disp('Composition does not sum to one. - Exiting')
@@ -233,7 +238,7 @@ if length(K) == 2 % Dealing with quartz
 		pT(j) = p(1)*exp(-phi(j));
 		VT(j) = Vo(1)*exp(phi(j));
 
- 		% regressions by Abersw and Hacker (2016) on Ohno et al. 2006 data
+ 		% regressions by Abers and Hacker (2016) on Ohno et al. 2006 data
 		aktp0 = (11.384 + 0.6478*log(Tab(j) - 298) + 0.5878*(log(Tab(j) - 298).^2)) ; %Ks(P,25C)
 		amup0 = (41.721 - 0.034879*log(Tab(j) - 298) + 0.08424*(log(Tab(j) - 298).^2)); %G(P,25C)
 		KT(j) = (K(1)./aktp0).*(11.384 + 0.6478*log(Tab(j) - T(j)) + 0.5878*(log(Tab(j) - T(j)).^2)) ; %Ks(0,T)
