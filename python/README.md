@@ -1,4 +1,4 @@
-# MinVel python routines
+# MinVel Python routines
 This program is used to calculate anharmonic p- and s-wave velocity and density for zero-porosity mineral aggregates. It is based on the work of Hacker and Abers (2004, updated in 2016) with additional minerals and optimized for related work. Running the code requires a mineral physics database, MineralPhysicsDatabase.nc. Combined with a petrologic database (Sowers and Boyd, 2019) and thermal and geologic models, results from this code are used in as part of an effort to produce a three dimensional national crustal model for use with seismic hazard studies. (https://www.sciencebase.gov/catalog/item/5b046c6ce4b0d8682b96353a).
 
 Installation:
