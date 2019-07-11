@@ -16,4 +16,4 @@ Abers, G.A., and Hacker, B.R., 2016, A MATLAB toolbox and Excel workbook for cal
 
 Hacker, B.R., and Abers, G.A., 2004, Subduction Factory 3: An Excel worksheet and macro for calculating the densities, seismic wave speeds, and H2O contents of minerals and rocks at pressure and temperature: Geochem. Geophys. Geosys., v. 5, no. Q01005.
 
-Sowers, T. and O. S. Boyd, 2019, Petrologic and Mineral Physics Database for use with the USGS National Crustal Model (ver. 1.0): U.S. Geological Survey Open File Report.
+Sowers, T., and Boyd, O.S., 2019, Petrologic and mineral physics database for use with the U.S. Geological Survey National Crustal Model: U.S. Geological Survey Open-File Report 2019–1035, 17 p., https://doi.org/10.3133/ofr20191035.
