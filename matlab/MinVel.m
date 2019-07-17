@@ -2,8 +2,6 @@ function MV = MinVel(Comp, P, T)
 %function MV = MinVel(Comp, Pressure, Temperature)
 %
 %	Written by Oliver Boyd
-%	V0.1 released Nov. 16th 2007, last updated 12/11/2018
-%	Mineral database updated 12/10/2018
 %
 %	This program calculates the velocity of the mineral assemblage 
 %	given by Comp at a given pressure and temperature (which may be
@@ -20,25 +18,19 @@ function MV = MinVel(Comp, P, T)
 %
 %	OUTPUT (SI Units)
 %		MV - structure containing
+%			K   - Bulk modulus, Voigt-Reuss-Hill average
+%			G   - Shear modulus, Voigt-Reuss-Hill average
+%			E   - Young's modulus
+%			l   - Lambda
+%			v   - Poisson's ratio
+%			Vp  - P-wave velocity, Voigt-Reuss-Hill average
+%			Vs  - S-wave velocity, Voigt-Reuss-Hill average
+%			p   - Density
+%			a   - Thermal Expansivity
 %			Vpv - P-wave velocity, Voigt average
 %			Vpr - P-wave velocity, Reuss average
 %			Vsv - S-wave velocity, Voigt average
 %			Vsr - S-wave velocity, Reuss average
-%			p   - Density
-%			a   - Thermal Expansivity
-%			Kv  - Bulk modulus, Voigt average
-%			Gv  - Shear modulus, Voigt average
-%			Kr  - Bulk modulus, Reuss average
-%			Gr  - Shear modulus, Reuss average
-%			Vp  - P-wave velocity, Voigt-Reuss-Hill average
-%			Vs  - S-wave velocity, Voigt-Reuss-Hill average
-%			K   - Bulk modulus, Voigt-Reuss-Hill average
-%			G   - Shear modulus, Voigt-Reuss-Hill average
-%
-%	Additional outputs based on Voigt-Reuss-Hill average
-%			l   - Lambda
-%			v   - Poisson's ratio
-%			E   - Young's modulus
 %
 %	INPUTS
 %	Pressure - desired pressure or vector of pressures (Pa)
@@ -145,6 +137,17 @@ function MV = MinVel(Comp, P, T)
 %		72. Lizardite                     
 %		76. Dickite                       
 %
+%	Example:
+%	Geophysical parameters for 20% Quartz, 20% low Albite, 30% Forsterite, and 30% Fayalite 
+%       at 0.1, 0.3, and 0.5 MPa and 300, 400, and 500 K
+%	At the MATLAB prompt, run:
+%	Comp.Min = [1 5 12 13];
+%	Comp.Fr = [0.2 0.2 0.3 0.3];
+%	Pressure = [0.1e6 0.3e6 0.5e6];
+%	Temperature = [300 400 500];
+%	MV = MinVel(Comp, Pressure, Temperature)
+%
+
 
 % NOTES: May want to update temperature dependence of thermal expansivity using Holland and Powell's (2011) 
 %        new revised equations (see figure 1 in that article). This will necessitate recalculating the first
@@ -361,12 +364,19 @@ function MV = GetMV(p, K, G, Vp, Vs, a, cmp)
 % GetMV calculates the Voigt-Reuss averages (of velocities but should be moduli
 % though VRH will be about the same) of the s and p-wave velocity (Anderson 1997).
 
+MV.K = zeros(1,length(Vp(1,:)));
+MV.G = zeros(1,length(Vp(1,:)));
+MV.E = zeros(1,length(Vp(1,:)));
+MV.l = zeros(1,length(Vp(1,:)));
+MV.v = zeros(1,length(Vp(1,:)));
+MV.Vp = zeros(1,length(Vp(1,:)));
+MV.Vs = zeros(1,length(Vp(1,:)));
+MV.p = zeros(1,length(Vp(1,:)));
+MV.a = zeros(1,length(Vp(1,:)));
 MV.Vpv = zeros(1,length(Vp(1,:)));
 MV.Vpr = zeros(1,length(Vp(1,:)));
 MV.Vsv = zeros(1,length(Vp(1,:)));
 MV.Vsr = zeros(1,length(Vp(1,:)));
-MV.p = zeros(1,length(Vp(1,:)));
-MV.a = zeros(1,length(Vp(1,:)));
 
 MV.p = cmp*p(1:length(cmp),:);
 MV.a = cmp*a(1:length(cmp),:);
@@ -374,24 +384,24 @@ MV.a = cmp*a(1:length(cmp),:);
 % Voigt Average
 %MV.Vpv = (Wt.*cmp)*Vp(1:length(cmp),:)/WT;
 %MV.Vsv = (Wt.*cmp)*Vs(1:length(cmp),:)/WT;
-MV.Kv = cmp*K(1:length(cmp),:);
-MV.Gv = cmp*G(1:length(cmp),:);
-MV.Vpv = sqrt((MV.Kv + 4*MV.Gv/3)./MV.p);
-MV.Vsv = sqrt(MV.Gv./MV.p);
+Kv = cmp*K(1:length(cmp),:);
+Gv = cmp*G(1:length(cmp),:);
+MV.Vpv = sqrt((Kv + 4*Gv/3)./MV.p);
+MV.Vsv = sqrt(Gv./MV.p);
 
 % Reuss Average
 %MV.Vpr = WT./((Wt.*cmp)*(1./Vp(1:length(cmp),:)));
 %MV.Vsr = WT./((Wt.*cmp)*(1./Vs(1:length(cmp),:)));
-MV.Kr = 1./(cmp*(1./K(1:length(cmp),:)));
-MV.Gr = 1./(cmp*(1./G(1:length(cmp),:)));
-MV.Vpr = sqrt((MV.Kr + 4*MV.Gr/3)./MV.p);
-MV.Vsr = sqrt(MV.Gr./MV.p);
+Kr = 1./(cmp*(1./K(1:length(cmp),:)));
+Gr = 1./(cmp*(1./G(1:length(cmp),:)));
+MV.Vpr = sqrt((Kr + 4*Gr/3)./MV.p);
+MV.Vsr = sqrt(Gr./MV.p);
 
 % Voigt Reuss Hill Average
 MV.Vp = (MV.Vpv + MV.Vpr)/2;
 MV.Vs = (MV.Vsv + MV.Vsr)/2;
-MV.K = (MV.Kv + MV.Kr)/2;
-MV.G = (MV.Gv + MV.Gr)/2;
+MV.K = (Kv + Kr)/2;
+MV.G = (Gv + Gr)/2;
 
 MV.l = MV.K-2*MV.G/3;
 MV.v = MV.l./(2*(MV.l+MV.G));
