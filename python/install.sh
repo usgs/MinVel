@@ -17,7 +17,7 @@ fi
 source $prof
 
 # Name of virtual environment
-VENV=ncm
+VENV=minvel
 
 developer=0
 py_ver=3.6
@@ -73,7 +73,7 @@ fi
 # Start in conda base environment
 conda activate base
 
-# Remove existing ncm environment if it exists
+# Remove existing minvel environment if it exists
 conda remove -y -n $VENV --all
 
 package_list=(
