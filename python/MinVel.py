@@ -31,7 +31,7 @@ def CalcMV(Cm,Cv,T,P):
     V = np.zeros((nMin,nPT),dtype=np.float64);
     Cmp = np.zeros((nMin),dtype=np.float64);
 
-    Par, MinNames, nPar, nAllMin = loadPar('database/MineralPhysicsDatabase.nc')
+    Par, MinNames, nPar, nAllMin = loadPar('../database/MineralPhysicsDatabase.nc')
     MinIndex = Par[0,:];
     for j in range(0,nMin):
         Cmp[j] = Cv[j];
