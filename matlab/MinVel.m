@@ -151,7 +151,7 @@ function MV = MinVel(Comp, P, T)
 %	 Gruneisen parameters. This could provide more realistic temperature dependence of material 
 %	 properties within the mantle.
 
-Par = ncread('MineralPhysicsDatabase.nc','Parameter Values');
+Par = ncread('../database/MineralPhysicsDatabase.nc','Parameter Values');
 
 if abs(sum(Comp.Fr) - 1) > 1e-6
 	disp('Composition does not sum to one. - Exiting')
