@@ -241,7 +241,7 @@ if sum(Cv) < 1:
     print('Composition does not sum to one. - Exiting')
     sys.exit()
 
-Par, MinNames, nPar, nAllMin = mv.loadPar('database/MineralPhysicsDatabase.nc')
+Par, MinNames, nPar, nAllMin = mv.loadPar('../database/MineralPhysicsDatabase.nc')
 MinIndex = Par[0,:];
 
 print('{0:21s}{1:20s}'.format('Mineral','Volume fraction'))
