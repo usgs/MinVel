@@ -10,17 +10,13 @@ import numpy as np
 
 if len(sys.argv) > 1:
     if sys.argv[1] == "-h":
-        print('MinVel -- PRogram to calculates mineral aggregate moduli and density')
+        print('MinVel -- Program to calculate mineral aggregate moduli and density')
         print('')
         print('        Written by Oliver Boyd')
-        print('        V0.1 released Nov. 16th 2007, last updated 12/11/2018')
-        print('        Mineral database updated 12/10/2018')
         print('')
-        print('        This program calculates the velocity of the mineral assemblage ')
-        print('        given by Comp at a given pressure and temperature (which may be')
-        print('        vectors). It returns the geophysical parameters in the')
-        print('        structure MV. The velocities are expressed as Voigt, Reuss,')
-        print('       and Voigt-Reuss-Hill averages.')
+        print('        This program calculates the velocity and density of a mineral assemblage ')
+        print('        at a given pressure and temperature (which may be vectors).')
+        print('        The velocities are expressed as Voigt, Reuss, and Voigt-Reuss-Hill averages.')
         print('')
         print('        The data required for this analysis is taken from Hacker and Abers (2003),')
         print('        updated by Abers and Hacker in 2016, and expanded by Boyd in 2018.')
@@ -30,45 +26,44 @@ if len(sys.argv) > 1:
         print('        Boyd et al. (2004) with updates by Abers and Hacker (2016) for quartz.')
         print('')
         print('        OUTPUT (SI Units)')
-        print('                MV - structure containing')
-        print('                        Vpv - P-wave velocity, Voigt average')
-        print('                        Vpr - P-wave velocity, Reuss average')
-        print('                        Vsv - S-wave velocity, Voigt average')
-        print('                        Vsr - S-wave velocity, Reuss average')
-        print('                        p   - Density')
-        print('                        a   - Thermal Expansivity')
-        print('                        Kv  - Bulk modulus, Voigt average')
-        print('                        Gv  - Shear modulus, Voigt average')
-        print('                        Kr  - Bulk modulus, Reuss average')
-        print('                        Gr  - Shear modulus, Reuss average')
-        print('                        Vp  - P-wave velocity, Voigt-Reuss-Hill average')
-        print('                        Vs  - S-wave velocity, Voigt-Reuss-Hill average')
-        print('                        K   - Bulk modulus, Voigt-Reuss-Hill average')
-        print('                        G   - Shear modulus, Voigt-Reuss-Hill average')
-        print('')
-        print('        Additional outputs based on Voigt-Reuss-Hill average')
+        print('                results.npy - numpy binary file containing the following vectors:')
+        print('                    Voigt-Reuss-Hill averages')
+        print('                        K   - Bulk modulus')
+        print('                        G   - Shear modulus')
+        print('                        E   - Youngs modulus')
         print('                        l   - Lambda')
         print('                        v   - Poissons ratio')
-        print('                        E   - Youngs modulus')
+        print('                        Vp  - P-wave velocity')
+        print('                        Vs  - S-wave velocity')
+        print('                        p   - Density')
+        print('                        a   - Thermal Expansivity')
+        print('                    Voigt(v) and Reuss(r) bounds on velocity')
+        print('                        Vpv - P-wave velocity')
+        print('                        Vpr - P-wave velocity')
+        print('                        Vsv - S-wave velocity')
+        print('                        Vsr - S-wave velocity')
         print('')
         print('        INPUTS')
         print('        Command line options')
         print('        -h Help about this program.')
         print('')
-        print('        -f InputFile - File containing composition, temperature, and pressure information with the following format')
+        print('        -f InputFile - File containing composition, temperature, and pressure ')
+        print('              information with the following format')
         print('           MinIndx 1, MinIndx 2, ..., MinIndx N')
         print('           VolFrac 1, VolFrac 2, ..., VolFrac N')
         print('           T1, P1')
         print('           T2, P2')
         print('           ...')
         print('           TN, PN')
-        print('        -p Pressure - desired pressure or vector of pressures (Pa)')
-        print('        -t Temperature - desired temperature or vector of temperatures (K)')
+        print('')
+        print('        -p Pressure - desired pressure or comma separated vector of pressures (Pa)')
+        print('        -t Temperature - desired temperature or comma separated vector of temperatures (K)')
         print('')
         print('        Composition parmeters - a composition structure with the following fields: ')
-        print('        -cm Min - The mineral index vector.')
-        print('        -cv Fr - Volume fraction for each mineral in Min (0 to 1).')
+        print('        -cm Min - The mineral index comma separated vector.')
+        print('        -cv Fr - Volume fraction for each mineral in Min (0 to 1), comma separated.')
         print('')
+        print('          Mineral Indexes')
         print('            Quartz')
         print('                 1. Alpha Quartz                  ')
         print('                 2. Beta Quartz                   ')
@@ -166,23 +161,30 @@ if len(sys.argv) > 1:
         print('                72. Lizardite                     ')
         print('                76. Dickite                       ')
         print('')
+        print('     Example:');
+        print('     Geophysical parameters for 20% Quartz, 20% low Albite, 30% Forsterite, and 30% Fayalite at')
+        print('     300, 400, and 500K and 0.1, 0.3, and 0.5 MPa')
+        print('     > python MinVelWrapper.py -t 300,400,500 -p 0.1e6,0.3e6,0.5e6 -cm 1,5,12,13 -cv 0.2,0.2,0.3,0.3')
+        print('')
         sys.exit()
 
 nMin = 1
 nPT = 1
+nT = 0
+nP = 0
 if len(sys.argv) > 1:
     for j in range(1,len(sys.argv),2):
         if sys.argv[j] == "-t":
             entries = sys.argv[j+1].split(",")
-            nPT = len(entries)
-            T = np.zeros((nPT),dtype=np.float64)
-            for k in range(0,nPT):
+            nT = len(entries)
+            T = np.zeros((nT),dtype=np.float64)
+            for k in range(0,nT):
                 T[k] = entries[k]
         if sys.argv[j] == "-p":
             entries = sys.argv[j+1].split(",")
-            nPT = len(entries)
-            P = np.zeros((nPT),dtype=np.float64)
-            for k in range(0,nPT):
+            nP = len(entries)
+            P = np.zeros((nP),dtype=np.float64)
+            for k in range(0,nP):
                 P[k] = entries[k]
         if sys.argv[j] == "-cm":
             entries = sys.argv[j+1].split(",")
@@ -192,9 +194,9 @@ if len(sys.argv) > 1:
                 Cm[k] = entries[k]
         if sys.argv[j] == "-cv":
             entries = sys.argv[j+1].split(",")
-            nMin = len(entries)
-            Cv = np.zeros((nMin),dtype=np.float64)
-            for k in range(0,nMin):
+            nFr = len(entries)
+            Cv = np.zeros((nFr),dtype=np.float64)
+            for k in range(0,nFr):
                 Cv[k] = entries[k]
         if sys.argv[j] == "-f":
             fl = sys.argv[j+1]
@@ -211,6 +213,9 @@ if len(sys.argv) > 1:
                     else:
                         nPT = nPT + 1
                     ln = ln + 1
+            nT = nPT
+            nP = nPT
+            nFr = nMin
             f.close()
             T = np.zeros((nPT),dtype=np.float64)
             P = np.zeros((nPT),dtype=np.float64)
@@ -240,6 +245,14 @@ if len(sys.argv) > 1:
 if sum(Cv) < 1:
     print('Composition does not sum to one. - Exiting')
     sys.exit()
+if nT != nP:
+    print('Number of temperature inputs must be equal to the number of pressure inputs')
+    sys.exit()
+else:
+    nPT = nT
+if nMin != nFr:
+    print('Number of minerals types must be equal to the number of mineral fractional volumes')
+    sys.exit()
 
 Par, MinNames, nPar, nAllMin = mv.loadPar('../database/MineralPhysicsDatabase.nc')
 MinIndex = Par[0,:];
@@ -255,7 +268,7 @@ else:
     print('Pressure',P)
 print('')
 
-K, G, E, l, v, Vp, Vs, den = mv.CalcMV(Cm,Cv,T,P);
+K, G, E, l, v, Vp, Vs, den, Vpv, Vpr, Vsv, Vsr, a = mv.CalcMV(Cm,Cv,T,P);
 print('K  ',K)
 print('G  ',G)
 print('E  ',E)
@@ -264,8 +277,16 @@ print('v  ',v)
 print('Vp ',Vp)
 print('Vs ',Vs)
 print('den',den)
+print('a  ',a)
+print('')
+print('Voigt(v) and Reuss(r) bounds on velocity')
+print('Vpv',Vpv)
+print('Vpr',Vpr)
+print('Vsv',Vsv)
+print('Vsr',Vsr)
+print('')
 
-res = np.zeros((8,nPT),dtype=np.float64)
+res = np.zeros((13,nPT),dtype=np.float64)
 res[0,:] = K
 res[1,:] = G
 res[2,:] = E
@@ -274,11 +295,13 @@ res[4,:] = v
 res[5,:] = Vp
 res[6,:] = Vs
 res[7,:] = den
+res[8,:] = a
+res[9,:] = Vpv
+res[10,:] = Vpr
+res[11,:] = Vsv
+res[12,:] = Vsr
 
 f = 'results.npy'
 np.save(f,res)
-
-t = np.load(f)
-print(t)
 
 sys.exit()

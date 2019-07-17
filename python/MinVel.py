@@ -47,8 +47,8 @@ def CalcMV(Cm,Cv,T,P):
                 Par[5,k], Par[8,k], \
                 Par[15,k], Par[20,k], \
                 Par[10,k], Par[13,k], Par[3,k]);
-    K, G, E, l, v, Vp, Vs, den = GetMV(p, K, G, Cmp);
-    return K, G, E, l, v, Vp, Vs, den;
+    K, G, E, l, v, Vp, Vs, den, Vpv, Vpr, Vsv, Vsr, a = GetMV(p, K, G, a, Cmp);
+    return K, G, E, l, v, Vp, Vs, den, Vpv, Vpr, Vsv, Vsr, a;
 
 def GetV(P, T, th, dt, gamma, p, a, G, dGdPr, K, dKdPr, Vo):
 
@@ -234,7 +234,7 @@ def GetF(P,KT,dKdP):
 
     return f;
 
-def GetMV(p, k, g, Cmp):
+def GetMV(p, k, g, a, Cmp):
 
     # GetMV calculates the Voigt-Reuss averages (of velocities but should be moduli
     # though VRH will be about the same) of the s and p-wave velocity (Anderson 1997).
@@ -259,15 +259,17 @@ def GetMV(p, k, g, Cmp):
     Vp = np.zeros((nPT),dtype=np.float64)
     Vs = np.zeros((nPT),dtype=np.float64)
     den = np.zeros((nPT),dtype=np.float64)
-    a = np.zeros((nPT),dtype=np.float64)
+    al = np.zeros((nPT),dtype=np.float64)
 
     Kv = Cmp[0]*k[0,:]
     Gv = Cmp[0]*g[0,:]
     iKr = Cmp[0]/k[0,:]
     iGr = Cmp[0]/g[0,:]
     den = Cmp[0]*p[0,:]
+    al = Cmp[0]*a[0,:]
     for j in range(1,nMin):
         den = den + Cmp[j]*p[j,:]
+        al = al + Cmp[j]*a[j,:]
         # Voigt Average
         Kv = Kv + Cmp[j]*k[j,:]
         Gv = Gv + Cmp[j]*g[j,:]
@@ -292,4 +294,4 @@ def GetMV(p, k, g, Cmp):
     v = l/(2*(l+G))
     E = 2*G*(1+v)
 
-    return K, G, E, l, v, Vp, Vs, den;
+    return K, G, E, l, v, Vp, Vs, den, Vpv, Vpr, Vsv, Vsr, al;
